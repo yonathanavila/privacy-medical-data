@@ -1,6 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import Navbar from './components/Navbar'
+import Provider from './Provider'
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -18,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className='bg-gradient-to-b from-[#131727] to-[#070816] min-h-screen'>
-        <Navbar />
-        <main className="flex min-h-screen flex-col font-roboto mt-4">
-          {children}
-        </main>
+        <Provider>
+          <Navbar />
+          <main className="flex min-h-screen flex-col font-roboto mt-4">
+            {children}
+          </main>
+        </Provider>
       </body>
     </html>
   )
