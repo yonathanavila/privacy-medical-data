@@ -81,14 +81,15 @@ const Page = () => {
 
     const handleFileUpload = async (step: number) => {
         setStepLoading(step, true);
-
+        console.log('Entrando...')
         let CID = ''
         switch (step) {
             case 1:
                 if (!stepOneInfo) {
                     throw new Error("No data");
                 }
-                CID = await storeFiles(stepOneInfo);
+                CID = await storeFiles(stepOneInfo.file);
+                console.log(CID)
                 dispatch(addStep({
                     stepName: 'queryFile',
                     CID
@@ -99,7 +100,7 @@ const Page = () => {
                 if (!stepTwoInfo) {
                     throw new Error("No data");
                 }
-                CID = await storeFiles(stepOneInfo);
+                CID = await storeFiles(stepTwoInfo.file);
                 dispatch(addStep({
                     stepName: 'projectionFile',
                     CID
@@ -110,7 +111,7 @@ const Page = () => {
                 if (!stepThreeInfo) {
                     throw new Error("No data");
                 }
-                CID = await storeFiles(stepOneInfo);
+                CID = await storeFiles(stepThreeInfo.file);
                 dispatch(addStep({
                     stepName: 'scriptFile',
                     CID
@@ -126,21 +127,24 @@ const Page = () => {
     const handleOnDropStep1 = (event: any) => {
         event.preventDefault();
         const files = event.dataTransfer.files;
-        setStepOneInfo(files[0]);
+        console.log(files)
+        setStepOneInfo(
+            { name: 'queryFile', file: files[0] }
+        )
         // Additional logic for step 1
     };
 
     const handleOnDropStep2 = (event: any) => {
         event.preventDefault();
         const files = event.dataTransfer.files;
-        setStepTwoInfo(files[0]);
+        setStepTwoInfo({ name: 'projectionFile', file: files[0] });
         // Additional logic for step 2
     };
 
     const handleOnDropStep3 = (event: any) => {
         event.preventDefault();
         const files = event.dataTransfer.files;
-        setStepThreeInfo(files[0]);
+        setStepThreeInfo({ name: 'scriptFile', file: files[0] });
         // Additional logic for step 3
     };
 
@@ -232,7 +236,7 @@ const Page = () => {
                                         </div>
                                     </div>
                                     <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepTwoInfo && (<ButtonUpload name={stepTwoInfo?.name} handle={handleFileUpload(2)} />)}
+                                        {stepTwoInfo && (<ButtonUpload name={stepTwoInfo?.name} handle={() => handleFileUpload(2)} />)}
                                     </div>
                                 </div>
                             </div>
@@ -260,7 +264,7 @@ const Page = () => {
                                         </div>
                                     </div>
                                     <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepThreeInfo && (<ButtonUpload name={stepThreeInfo?.name} handle={handleFileUpload(3)} />)}
+                                        {stepThreeInfo && (<ButtonUpload name={stepThreeInfo?.name} handle={() => handleFileUpload(3)} />)}
                                     </div>
                                 </div>
                             </div>
