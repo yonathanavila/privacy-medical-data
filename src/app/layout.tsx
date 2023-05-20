@@ -18,9 +18,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className='bg-gradient-to-b from-[#131727] to-[#070816] min-h-screen'>
+      <body className='bg-gradient-to-b from-[#131727] to-[#070816] h-full'>
         <div className="bck"></div>
-        <div className="logoBck" style={{ opacity: "65%", transform: "translateY(-50%)" }}></div>
         <div className="dotBck" style={{ transform: "scale(1.1)" }}></div>
         <Provider>
           <Navbar />
