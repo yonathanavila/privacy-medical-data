@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import DropInput from '../components/QuerySelector/DropInput';
 import { addStep, selectStep } from '~/root/utils/slice/steps';
-import { storeFiles } from '~/root/utils/functions/QuerySelector';
+import { uploadFile } from '~/root/utils/functions/QuerySelector';
 import ButtonUpload from '../components/QuerySelector/ButtonUpload';
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '~/root/hooks/useAppDispatch';
@@ -45,20 +45,20 @@ const Page = () => {
         event.preventDefault();
         const { name, files } = event.target;
         setStepOneInfo(
-            { name, file: files[0] }
+            { name, file: event }
         )
     };
 
     const handleStepTwoInfoChange = (event: any) => {
         event.preventDefault();
         const { name, files } = event.target;
-        setStepTwoInfo(files[0]);
+        setStepTwoInfo({ name, file: event });
     };
 
     const handleStepThreeInfoChange = (event: any) => {
         event.preventDefault();
         const { name, files } = event.target;
-        setStepThreeInfo(files[0]);
+        setStepThreeInfo({ name, file: event });
     };
 
     const setStepLoading = (step: number, loading: boolean) => {
@@ -85,7 +85,7 @@ const Page = () => {
                 if (!stepOneInfo) {
                     throw new Error("No data");
                 }
-                CID = await storeFiles(stepOneInfo.file);
+                CID = await uploadFile(stepOneInfo.file);
                 dispatch(addStep({
                     stepName: 'queryFile',
                     CID
@@ -100,7 +100,7 @@ const Page = () => {
                 if (!stepTwoInfo) {
                     throw new Error("No data");
                 }
-                CID = await storeFiles(stepTwoInfo.file);
+                CID = await uploadFile(stepTwoInfo.file);
                 dispatch(addStep({
                     stepName: 'projectionFile',
                     CID
@@ -116,7 +116,7 @@ const Page = () => {
                 if (!stepThreeInfo) {
                     throw new Error("No data");
                 }
-                CID = await storeFiles(stepThreeInfo.file);
+                CID = await uploadFile(stepThreeInfo.file);
                 dispatch(addStep({
                     stepName: 'scriptFile',
                     CID
@@ -137,7 +137,7 @@ const Page = () => {
         event.preventDefault();
         const files = event.dataTransfer.files;
         setStepOneInfo(
-            { name: 'queryFile', file: files[0] }
+            { name: 'queryFile', file: files }
         )
         // Additional logic for step 1
     };
@@ -145,14 +145,14 @@ const Page = () => {
     const handleOnDropStep2 = (event: any) => {
         event.preventDefault();
         const files = event.dataTransfer.files;
-        setStepTwoInfo({ name: 'projectionFile', file: files[0] });
+        setStepTwoInfo({ name: 'projectionFile', file: event });
         // Additional logic for step 2
     };
 
     const handleOnDropStep3 = (event: any) => {
         event.preventDefault();
         const files = event.dataTransfer.files;
-        setStepThreeInfo({ name: 'scriptFile', file: files[0] });
+        setStepThreeInfo({ name: 'scriptFile', file: event });
         // Additional logic for step 3
     };
 
@@ -203,8 +203,7 @@ const Page = () => {
                             <div className="shadow sm:rounded-md sm:overflow-hidden mt-4 rounded-md hover:border hover:border-gray-300">
                                 <div className='p-2 block'>
                                     <CheckCircleOutlined className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
-                                    <p className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>Your CID is:</p>
-                                    <p className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>{stepOne?.CID}</p>
+                                    <a className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`} target='_blank' href={'https://gateway.lighthouse.storage/ipfs/' + stepOne?.CID}>Visit at Lighthouse</a>
                                 </div>
                                 <div className={`${stepOne && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>
                                     <div className="px-4 py-5 sm:p-6">
@@ -231,7 +230,7 @@ const Page = () => {
                             <div className="shadow sm:rounded-md sm:overflow-hidden hover:border hover:border-gray-300 mt-4 rounded-md">
                                 <div className='p-2'>
                                     <CheckCircleOutlined className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
-                                    <p className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>{stepTwo?.CID}</p>
+                                    <a className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`} target='_blank' href={'https://gateway.lighthouse.storage/ipfs/' + stepTwo?.CID}>Visit at Lighthouse</a>
 
                                 </div>
                                 <div className={`${stepTwo && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>
@@ -259,7 +258,7 @@ const Page = () => {
                             <div className="shadow sm:rounded-md sm:overflow-hidden hover:border hover:border-gray-300 mt-4 rounded-md">
                                 <div className='p-2'>
                                     <CheckCircleOutlined className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
-                                    <p className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>{stepThree?.CID}</p>
+                                    <a className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`} target='_blank' href={'https://gateway.lighthouse.storage/ipfs/' + stepThree?.CID}>Visit at Lighthouse</a>
 
                                 </div>
                                 <div className={`${stepThree && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>

@@ -7,7 +7,7 @@ import Provider from './Provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'FVM Dataverse',
+  title: 'Electronic Health Records - #FVMDataverse',
   description: 'FVM Dataverse Hackathon',
 }
 
