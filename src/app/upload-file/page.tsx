@@ -18,6 +18,7 @@ const Page = () => {
     const [stepOne, setStepOne] = useState<any>("");
     const [stepTwo, setStepTwo] = useState<any>("");
     const [stepThree, setStepThree] = useState<any>("");
+    const [currentStep, setCurrentStep] = useState<any>("");
 
     useEffect(() => {
         // set query file if exist
@@ -43,7 +44,6 @@ const Page = () => {
     const handleStepOneInfoChange = (event: any) => {
         event.preventDefault();
         const { name, files } = event.target;
-        console.log(name, files);
         setStepOneInfo(
             { name, file: files[0] }
         )
@@ -52,14 +52,12 @@ const Page = () => {
     const handleStepTwoInfoChange = (event: any) => {
         event.preventDefault();
         const { name, files } = event.target;
-        console.log(name);
         setStepTwoInfo(files[0]);
     };
 
     const handleStepThreeInfoChange = (event: any) => {
         event.preventDefault();
         const { name, files } = event.target;
-        console.log(name);
         setStepThreeInfo(files[0]);
     };
 
@@ -81,7 +79,6 @@ const Page = () => {
 
     const handleFileUpload = async (step: number) => {
         setStepLoading(step, true);
-        console.log('Entrando...')
         let CID = ''
         switch (step) {
             case 1:
@@ -89,12 +86,15 @@ const Page = () => {
                     throw new Error("No data");
                 }
                 CID = await storeFiles(stepOneInfo.file);
-                console.log(CID)
                 dispatch(addStep({
                     stepName: 'queryFile',
                     CID
                 }));
                 setStepOne({ loading: false, stepName: 'queryFile', CID });
+                setCurrentStep({
+                    current: 'queryFile',
+                    next: 'projectionFile'
+                });
                 break;
             case 2:
                 if (!stepTwoInfo) {
@@ -106,6 +106,11 @@ const Page = () => {
                     CID
                 }));
                 setStepTwo({ loading: false, stepName: 'projectionFile', CID });
+                setCurrentStep({
+                    current: 'projectionFile',
+                    next: 'scriptFile'
+                });
+
                 break;
             case 3:
                 if (!stepThreeInfo) {
@@ -117,6 +122,10 @@ const Page = () => {
                     CID
                 }));
                 setStepThree({ loading: false, stepName: 'scriptFile', CID });
+                setCurrentStep({
+                    current: 'scriptFile',
+                    next: ''
+                });
                 break;
             default:
                 throw new Error("Invalid step");
@@ -127,7 +136,6 @@ const Page = () => {
     const handleOnDropStep1 = (event: any) => {
         event.preventDefault();
         const files = event.dataTransfer.files;
-        console.log(files)
         setStepOneInfo(
             { name: 'queryFile', file: files[0] }
         )
@@ -158,19 +166,19 @@ const Page = () => {
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
                                 {stepOne?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
-                                Upload the query selector
+                                <p className={stepOne?.loading || currentStep?.current === 'queryFile' ? 'text-xl' : ''}>Upload the query selector</p>
                             </div>
                         </li>
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
                                 {stepTwo?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
-                                Upload the projection
+                                <p className={stepTwo?.loading || currentStep?.current === 'projectionFile' ? 'text-xl' : ''}>Upload the projection</p>
                             </div>
                         </li>
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
                                 {stepThree?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
-                                Upload the script
+                                <p className={stepThree?.loading || currentStep?.current === 'scriptFile' ? 'text-xl' : ''}>Upload the script</p>
                             </div>
                         </li>
                     </ul>
@@ -192,13 +200,13 @@ const Page = () => {
                                     You need to provide a query to request the data before.
                                 </p>
                             </div>
-                            <div className="shadow sm:rounded-md sm:overflow-hidden border border-gray-300 mt-4 rounded-md">
+                            <div className="shadow sm:rounded-md sm:overflow-hidden mt-4 rounded-md">
                                 <div className='p-2 block'>
                                     <CheckCircleOutlined className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
                                     <p className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>Your CID is:</p>
                                     <p className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>{stepOne?.CID}</p>
                                 </div>
-                                <div className={`${stepOne && 'blur-md'}`}>
+                                <div className={`${stepOne && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>
                                     <div className="px-4 py-5 sm:p-6">
                                         <div>
                                             <label className="block text-sm font-medium text-white">
@@ -208,7 +216,7 @@ const Page = () => {
                                         </div>
                                     </div>
                                     <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepOneInfo?.file && (<ButtonUpload name={stepOneInfo?.name} handle={() => handleFileUpload(1)} />)}
+                                        {stepOneInfo?.file && (<ButtonUpload name={stepOneInfo?.name} handle={() => handleFileUpload(1)} enable={stepOne?.CID ? true : false} />)}
                                     </div>
                                 </div>
                             </div>
@@ -226,7 +234,7 @@ const Page = () => {
                                     <p className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>{stepTwo?.CID}</p>
 
                                 </div>
-                                <div className={`${stepTwo && 'blur-md'}`}>
+                                <div className={`${stepTwo && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>
                                     <div className="px-4 py-5 sm:p-6">
                                         <div>
                                             <label className="block text-sm font-medium text-white">
@@ -236,7 +244,7 @@ const Page = () => {
                                         </div>
                                     </div>
                                     <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepTwoInfo && (<ButtonUpload name={stepTwoInfo?.name} handle={() => handleFileUpload(2)} />)}
+                                        {stepTwoInfo && (<ButtonUpload name={stepTwoInfo?.name} handle={() => handleFileUpload(2)} enable={stepTwo?.CID ? true : false} />)}
                                     </div>
                                 </div>
                             </div>
@@ -254,7 +262,7 @@ const Page = () => {
                                     <p className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>{stepThree?.CID}</p>
 
                                 </div>
-                                <div className={`${stepThree && 'blur-md'}`}>
+                                <div className={`${stepThree && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>
                                     <div className="px-4 py-5 sm:p-6">
                                         <div>
                                             <label className="block text-sm font-medium text-white">
@@ -264,7 +272,7 @@ const Page = () => {
                                         </div>
                                     </div>
                                     <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepThreeInfo && (<ButtonUpload name={stepThreeInfo?.name} handle={() => handleFileUpload(3)} />)}
+                                        {stepThreeInfo && (<ButtonUpload name={stepThreeInfo?.name} handle={() => handleFileUpload(3)} enable={stepThree?.CID ? true : false} />)}
                                     </div>
                                 </div>
                             </div>
