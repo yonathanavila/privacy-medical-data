@@ -19,10 +19,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className='bg-gradient-to-b from-[#131727] to-[#070816] min-h-screen'>
+        <div className="bck"></div>
+        <div className="logoBck" style={{ opacity: "65%", transform: "translateY(-50%)" }}></div>
+        <div className="dotBck" style={{ transform: "scale(1.1)" }}></div>
         <Provider>
           <Navbar />
-          <main className="flex min-h-screen flex-col font-roboto mt-4">
-            {children}
+          <main className="flex min-h-screen flex-col font-roboto w-full" >
+            <div style={{ zIndex: 5 }}>
+              {children}
+            </div>
           </main>
         </Provider>
       </body>

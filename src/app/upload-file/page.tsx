@@ -161,29 +161,29 @@ const Page = () => {
     return (
         <div className="flex flex-col min-h-screen items-center my-10 p-5">
             <div className="relative">
-                <div className="fixed top-[12vh] right-0 p-4 mr-4 z-10 w-[20%] drop-shadow-lg border border-gray-700 rounded-md bg-gray-800">
+                <div className="fixed top-[25vh] right-0 p-4 mr-4 z-10 w-[20%] drop-shadow-lg border border-gray-700 rounded-md bg-neutral-800/70 hover:cursor-pointer">
                     <ul className="">
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
                                 {stepOne?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
-                                <p className={stepOne?.loading || currentStep?.current === 'queryFile' ? 'text-xl' : ''}>Upload the query selector</p>
+                                <p className={`${stepOne?.loading || currentStep?.current === 'queryFile' && 'text-xl text-white'} transition ease-in-out delay-150 duration-300 hover:scale-110`}>Upload the query</p>
                             </div>
                         </li>
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
                                 {stepTwo?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
-                                <p className={stepTwo?.loading || currentStep?.current === 'projectionFile' ? 'text-xl' : ''}>Upload the projection</p>
+                                <p className={`${stepTwo?.loading || currentStep?.current === 'projectionFile' && 'text-xl text-white'} transition ease-in-out delay-150 duration-300 hover:scale-110`}>Upload the projection</p>
                             </div>
                         </li>
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
                                 {stepThree?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
-                                <p className={stepThree?.loading || currentStep?.current === 'scriptFile' ? 'text-xl' : ''}>Upload the script</p>
+                                <p className={`${stepThree?.loading || currentStep?.current === 'scriptFile' && 'text-xl text-white'} transition ease-in-out delay-150 duration-300 hover:scale-110`}>Upload the script</p>
                             </div>
                         </li>
                     </ul>
                 </div>
-                <div className="z-0">
+                <div className="z-0 bg-neutral-800/70 rounded-xl">
                     <button
                         onClick={() => router.push('/')}
                         className='bg-transparent border border-transparent hover:bg-neutral-800/30 hover:border-gray-300 p-4 rounded-md font-semibold'
@@ -200,7 +200,7 @@ const Page = () => {
                                     You need to provide a query to request the data before.
                                 </p>
                             </div>
-                            <div className="shadow sm:rounded-md sm:overflow-hidden mt-4 rounded-md">
+                            <div className="shadow sm:rounded-md sm:overflow-hidden mt-4 rounded-md hover:border hover:border-gray-300">
                                 <div className='p-2 block'>
                                     <CheckCircleOutlined className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
                                     <p className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>Your CID is:</p>
@@ -228,7 +228,7 @@ const Page = () => {
                                     It allows you to define the specific data you want to retrieve from a database or data source.
                                 </p>
                             </div>
-                            <div className="shadow sm:rounded-md sm:overflow-hidden border border-gray-300 mt-4 rounded-md">
+                            <div className="shadow sm:rounded-md sm:overflow-hidden hover:border hover:border-gray-300 mt-4 rounded-md">
                                 <div className='p-2'>
                                     <CheckCircleOutlined className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
                                     <p className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>{stepTwo?.CID}</p>
@@ -256,7 +256,7 @@ const Page = () => {
                                     This information will be displayed publicly so be careful what you share.
                                 </p>
                             </div>
-                            <div className="shadow sm:rounded-md sm:overflow-hidden border border-gray-300 mt-4 rounded-md">
+                            <div className="shadow sm:rounded-md sm:overflow-hidden hover:border hover:border-gray-300 mt-4 rounded-md">
                                 <div className='p-2'>
                                     <CheckCircleOutlined className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
                                     <p className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`}>{stepThree?.CID}</p>
