@@ -2,18 +2,19 @@
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import DropInput from '../components/QuerySelector/DropInput';
 import { addStep, selectStep } from '~/root/utils/slice/steps';
 import { storeFiles } from '~/root/utils/functions/QuerySelector';
+import ButtonUpload from '../components/QuerySelector/ButtonUpload';
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '~/root/hooks/useAppDispatch';
-import DropInput from '../components/QuerySelector/DropInput';
 
 const Page = () => {
     const dispatch = useAppDispatch();
     const steps: any = useAppSelector(selectStep);
-    const [stepOneInfo, setStepOneInfo] = useState<any>(null);
-    const [stepTwoInfo, setStepTwoInfo] = useState<any>(null);
-    const [stepThreeInfo, setStepThreeInfo] = useState<any>(null);
+    const [stepOneInfo, setStepOneInfo] = useState<any>("");
+    const [stepTwoInfo, setStepTwoInfo] = useState<any>("");
+    const [stepThreeInfo, setStepThreeInfo] = useState<any>("");
     const [stepOne, setStepOne] = useState<any>("");
     const [stepTwo, setStepTwo] = useState<any>("");
     const [stepThree, setStepThree] = useState<any>("");
@@ -40,18 +41,23 @@ const Page = () => {
     }
 
     const handleStepOneInfoChange = (event: any) => {
+        event.preventDefault();
         const { name, files } = event.target;
-        console.log(name);
-        setStepOneInfo(files[0]);
+        console.log(name, files);
+        setStepOneInfo(
+            { name, file: files[0] }
+        )
     };
 
     const handleStepTwoInfoChange = (event: any) => {
+        event.preventDefault();
         const { name, files } = event.target;
         console.log(name);
         setStepTwoInfo(files[0]);
     };
 
     const handleStepThreeInfoChange = (event: any) => {
+        event.preventDefault();
         const { name, files } = event.target;
         console.log(name);
         setStepThreeInfo(files[0]);
@@ -194,11 +200,11 @@ const Page = () => {
                                             <label className="block text-sm font-medium text-white">
                                                 Select file
                                             </label>
-                                            <DropInput handleDrop={handleOnDropStep1} handleChange={handleStepOneInfoChange} />
+                                            <DropInput handleDrop={handleOnDropStep1} handleChange={handleStepOneInfoChange} customName={"queryFile"} id={"queryFile"} />
                                         </div>
                                     </div>
                                     <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepThreeInfo && (<ButtonUpload name={stepOneInfo?.name} handle={handleFileUpload(1)} />)}
+                                        {stepOneInfo?.file && (<ButtonUpload name={stepOneInfo?.name} handle={() => handleFileUpload(1)} />)}
                                     </div>
                                 </div>
                             </div>
@@ -222,11 +228,11 @@ const Page = () => {
                                             <label className="block text-sm font-medium text-white">
                                                 Select file
                                             </label>
-                                            <DropInput handleDrop={handleOnDropStep2} handleChange={handleStepTwoInfoChange} />
+                                            <DropInput handleDrop={handleOnDropStep2} handleChange={handleStepTwoInfoChange} customName={"projectionFile"} id="projectionFile" />
                                         </div>
                                     </div>
                                     <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepThreeInfo && (<ButtonUpload name={stepTwoInfo?.name} handle={handleFileUpload(2)} />)}
+                                        {stepTwoInfo && (<ButtonUpload name={stepTwoInfo?.name} handle={handleFileUpload(2)} />)}
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +256,7 @@ const Page = () => {
                                             <label className="block text-sm font-medium text-white">
                                                 Select file
                                             </label>
-                                            <DropInput handleDrop={handleOnDropStep3} handleChange={handleStepThreeInfoChange} />
+                                            <DropInput handleDrop={handleOnDropStep3} handleChange={handleStepThreeInfoChange} customName={"scriptFile"} id="scriptFile" />
                                         </div>
                                     </div>
                                     <div className="px-4 py-3 text-right sm:px-6">

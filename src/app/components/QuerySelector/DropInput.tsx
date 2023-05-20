@@ -1,4 +1,4 @@
-const DropInput = ({ handleDrop, handleChange }: any) => {
+const DropInput = ({ handleDrop, handleChange, customName }: any) => {
     return (
         <div
             onDrop={handleDrop}
@@ -10,11 +10,11 @@ const DropInput = ({ handleDrop, handleChange }: any) => {
                 </svg>
 
                 <div className="flex text-sm text-gray-600">
-                    <label htmlFor="scriptFile" className="relative cursor-pointer bg-neutral-800/30 rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-cyan-500">
+                    <label htmlFor={customName} className="relative cursor-pointer bg-neutral-800/30 rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-cyan-500">
                         <span>Upload a file</span>
                         <input
-                            id="scriptFile"
-                            name="scriptFile"
+                            id={customName}
+                            name={customName}
                             type="file"
                             accept=".csv, .txt, .pdf, .json"
                             onChange={handleChange}
