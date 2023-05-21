@@ -10,6 +10,8 @@ import { FetchSignerResult } from '@wagmi/core';
 
 const baseURI = process.env.NEXT_PUBLIC_BASE_URI || "/api/v1"
 const medicalRecordsAddress = process.env.NEXT_PUBLIC_MR_ADDRESS!
+const gasLimit = process.env.NEXT_PUBLIC_GAS_LIMIT!
+const gasPrice = process.env.NEXT_PUBLIC_GAS_PRICE!
 
 /// @notice Reveal Resume
 interface RevealResponse {
@@ -29,12 +31,12 @@ export const createNewQuery = async (
         throw new Error('Invalid input parameters');
     }
 
-    const maxPriorityFee = await getMaxPriorityFeePerGas(provider);
-    const args: any[] = [
+/*     const maxPriorityFee = await getMaxPriorityFeePerGas(provider);
+ */    const args: any[] = [
         _encodedQuery,
         {
-            gasLimit: 1800000,
-            maxPriorityFeePerGas: maxPriorityFee?.toString(),
+            gasLimit: gasLimit || 1800000,
+            gasPrice: ethers.utils.parseUnits('2.5', 'gwei'),
             value: EthToWei(fee.toString())
         }
     ];
@@ -62,6 +64,6 @@ export const createNewQuery = async (
         console.error(error);
         toast.remove();
         toast.error("This didn't work.")
-        throw new Error('Failed to reveal applicants');
+        throw new Error('Failed to send transaction');
     }
 };
