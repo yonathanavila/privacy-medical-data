@@ -1,16 +1,26 @@
 "use client";
+
+import { useAccount, useProvider, useSigner } from 'wagmi';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import DropInput from '../components/QuerySelector/DropInput';
-import { addStep, selectStep } from '~/root/utils/slice/steps';
-import { uploadFile } from '~/root/utils/functions/QuerySelector';
-import ButtonUpload from '../components/QuerySelector/ButtonUpload';
+import getTotalFee from '~/root/utils/functions/getTotalFee';
+import getFILPrice from '~/root/utils/functions/getFILPrice';
+import DropInput from '../../components/QuerySelector/DropInput';
+import { addStep, clearArray, selectStep } from '~/root/utils/slice/steps';
+import ButtonUpload from '../../components/QuerySelector/ButtonUpload';
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '~/root/hooks/useAppDispatch';
+import getEncode, { IApplicantInformation } from '~/root/utils/functions/getEncode';
+import { uploadFile } from '~/root/utils/functions/uploadFile';
+import { createNewQuery } from '~/root/utils/functions/createNewQuery';
+import { chainId } from '~/root/utils/functions/chain';
 
 const Page = () => {
+
     const dispatch = useAppDispatch();
+
+    const { address } = useAccount();
     const steps: any = useAppSelector(selectStep);
     const [stepOneInfo, setStepOneInfo] = useState<any>("");
     const [stepTwoInfo, setStepTwoInfo] = useState<any>("");
@@ -19,6 +29,10 @@ const Page = () => {
     const [stepTwo, setStepTwo] = useState<any>("");
     const [stepThree, setStepThree] = useState<any>("");
     const [currentStep, setCurrentStep] = useState<any>("");
+    const [amount, setAmount] = useState<number>(22);
+
+    const provider = useProvider(chainId);
+    const { data: signer } = useSigner(chainId);
 
     useEffect(() => {
         // set query file if exist
@@ -156,13 +170,43 @@ const Page = () => {
         // Additional logic for step 3
     };
 
+    const handleConfirm = () => {
+        console.log(steps);
+
+        const _steps = [
+            {
+                "stepName": "queryFile",
+                "CID": "QmQJBu9G8WZ2SbDKNogxcLDxWGTVsQPPcigd4pm7hayCKa"
+            },
+            {
+                "stepName": "projectionFile",
+                "CID": "QmaPDtj3dPFkDLZqdsMiaATpQgyADFiVSC6CSEKMGobBmC"
+            },
+            {
+                "stepName": "scriptFile",
+                "CID": "QmcAk1yZXPg77DhfE538vb2iVFLeM7LvqbmxXKKtUdsqLa"
+            }
+        ]
+        const data: IApplicantInformation = {
+            amount,
+            dataProvider: "0x6a30fcA0254812026931117773DCa2B5ABcaF386",
+            queryCID: _steps[0].CID,
+            projectionCID: _steps[1].CID,
+            scriptCID: _steps[2].CID
+        };
+        const dataEncoded = getEncode(data);
+        createNewQuery(provider, signer, [dataEncoded], amount);
+        dispatch(clearArray)
+        console.log(dataEncoded);
+    };
+
     const router = useRouter();
 
     return (
-        <div className="flex flex-col min-h-screen items-center my-10 p-5">
+        <div className="flex flex-col min-h-screen items-center my-10 p-5" >
             <div className="relative">
-                <div className="fixed top-[25vh] right-0 p-4 mr-4 z-10 w-[20%] drop-shadow-lg border border-gray-700 rounded-md bg-neutral-800/70 hover:cursor-pointer">
-                    <ul className="">
+                <div className="fixed top-[25vh] right-0 p-4 mr-4 z-10 w-[20%] drop-shadow-lg border border-gray-700 rounded-md bg-neutral-800/70">
+                    <ul className="p-2">
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
                                 {stepOne?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
@@ -182,6 +226,20 @@ const Page = () => {
                             </div>
                         </li>
                     </ul>
+                    <p className='text-center text-sm'>1 FIL = 4.5 USD</p>
+                    <div className="text-right mt-4 text-black dark:text-slate-500 font-medium">
+                        <div className="ml-auto text-right mt-4">
+                            <div className="text-md text-slate-500 dark:text-slate-500">Total</div>
+                            <div className="text-xl text-black dark:text-white">{getTotalFee([{ fee: 1000 }]).total} FIL</div>
+                            <div className="text-md text-slate-500 dark:text-slate-500">${getFILPrice(getTotalFee([{ fee: 1000 }]).total)}</div>
+                        </div>
+                    </div>
+                    <button
+                        className='p-4 w-full bg-cyan-700 rounded-xl mt-2 hover:bg-cyan-800'
+                        onClick={handleConfirm}
+                    >
+                        Confirm order
+                    </button>
                 </div>
                 <div className="z-0 bg-neutral-800/70 rounded-xl">
                     <button
@@ -252,7 +310,7 @@ const Page = () => {
                             <div className="px-4 sm:px-0 m-4">
                                 <h3 className="font-bold text-lg text-white">Upload Script</h3>
                                 <p className="mt-1 text-sm text-white">
-                                    This information will be displayed publicly so be careful what you share.
+                                    The script allows to execute the query over the data.
                                 </p>
                             </div>
                             <div className="shadow sm:rounded-md sm:overflow-hidden hover:border hover:border-gray-300 mt-4 rounded-md">

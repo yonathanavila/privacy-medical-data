@@ -11,9 +11,9 @@ export default function Home() {
       <div className=" flex flex-col mb-32 text-center lg:text-left mt-[20vh] p-4">
         <div className="grid lg:grid-cols-2 sm:grid-cols-1 h-screen">
           <div className="flex flex-col items-center justify-center h-1/2">
-            <h1 className="text-7xl font-boxing font-semibold z-20 text-center">Electronic Health Record</h1>
+            <h1 className="text-7xl font-boxing font-semibold z-20 text-center">FileHealth</h1>
             <div className="w-1/2 bg-green-600 p-1 rounded-xl left-1/2"></div>
-            <p className="text-xl mt-10 z-20">A decentrilized solition to request medical data</p>
+            <p className="text-xl mt-10 z-20">A decentrilized solition to request medical records</p>
             <p className="text-md mt-4 z-20">#FVMDataverse #2023</p>
           </div>
           <div>

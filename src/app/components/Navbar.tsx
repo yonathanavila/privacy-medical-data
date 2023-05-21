@@ -48,7 +48,7 @@ const Navbar = () => {
                         style={{ clipPath: "polygon(49% 27%, 80% 25%, 63% 47%, 58.50% 79.00%, 43.75% 79%, 34% 48%, 18% 25%)" }}
                         onClick={() => router.push('/')} />
                     <a className="text-black dark:text-white hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" target="_blank" onClick={() => router.push('/')}>Home</a>
-                    <a className=" text-black dark:text-gray-400 hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" onClick={() => router.push('/upload-file')}>Query Builder</a>
+                    <a className=" text-black dark:text-gray-400 hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" onClick={() => router.push('/list')}>Medical Records</a>
                 </div>
 
                 <ConnectButton accountStatus="address" label="Sign in" />
