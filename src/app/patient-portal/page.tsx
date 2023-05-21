@@ -15,12 +15,15 @@ const PatientPortal = () => {
                             <a onClick={() => router.push('/provide-data')} className="p-4 mr-2 bg-gray-800 cursor-pointer border border-gray-700 text-white hover:bg-gray-700 rounded-md">Provide Data</a>
                             <a onClick={() => router.push('/upload-data')} className="p-4 bg-gray-800 cursor-pointer border border-gray-700 text-white hover:bg-gray-700 rounded-md">Upload Data</a>
                         </div>
-                        <div className="flex items-center text-yellow-500 my-4">
+                        <div className="flex items-center text-yellow-500 text-center my-4">
                             <ClockCircleOutlined />
                             <p className="text-white p-2">
-                                Note: Data will be supplied in anonymized way and it will not be possible to link it to you.
+                                Note: Data supplied are anonymized and it will not be possible to link it to you.
                             </p>
                         </div>
+                        <p className="text-sm text-center my-4">
+                            Another disclaimer: data provided to IPFS are be able to regenerate if you provide the same data struct
+                        </p>
                     </div>
                 </div>
             </div>

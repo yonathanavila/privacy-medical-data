@@ -47,9 +47,9 @@ const Navbar = () => {
                         className="hover:cursor-pointer"
                         style={{ clipPath: "polygon(49% 27%, 80% 25%, 63% 47%, 58.50% 79.00%, 43.75% 79%, 34% 48%, 18% 25%)" }}
                         onClick={() => router.push('/')} />
-                    <a className="text-black dark:text-white hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" target="_blank" onClick={() => router.push('/')}>Home</a>
-                    <a className=" text-black dark:text-gray-400 hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" onClick={() => router.push('/list')}>Medical Records</a>
-                    <a className=" text-black dark:text-gray-400 hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" onClick={() => router.push('/patient-portal')}>Provide Portal</a>
+                    <a className="text-black border border-gray-700 m-2 dark:text-white hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" target="_blank" onClick={() => router.push('/')}>Home</a>
+                    <a className="text-black border border-gray-700 m-2 dark:text-gray-400 hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" onClick={() => router.push('/list')}>Medical Records</a>
+                    <a className="text-black border border-gray-700 m-2 dark:text-gray-400 hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" onClick={() => router.push('/patient-portal')}>Provide Portal</a>
                 </div>
                 <ConnectButton accountStatus="address" label="Sign in" />
             </nav >
