@@ -8,9 +8,8 @@ export default async function List() {
     const router = useRouter();
 
     return (
-        <div className="flex flex-col max-h-screen lg:p-5 mt-[16vh] items-center justify-center">
-            <div className="grid grid-cols-1 w-3/4 max-h-screen mb-4 mt-[16vh]">
-
+        <div className="flex flex-col lg:p-5 mt-[16vh] items-center justify-center">
+            <div className="grid grid-cols-1 w-3/4">
                 <h1 className="text-2xl font-bold p-4">Medical records</h1>
                 <div className="flex flex-col">
                     <div className="overflow-x-auto md:overflow-x-hidden mb-5 border border-b-[1px] border-[#374151] rounded-md">

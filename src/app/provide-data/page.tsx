@@ -1,7 +1,17 @@
 "use client";
+import NoConnected from "../components/NoConnected";
+
 import { DownloadOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { useAccount } from "wagmi";
 
 const ProvideData = () => {
+
+    const { address, isConnected } = useAccount();
+
+    if (!address || !isConnected) {
+        return <NoConnected />
+    }
+
     return (
         <div className="flex flex-col items-center justify-center mt-[15vh]">
             <div className="grid grid-cols-1 w-1/2">
@@ -21,9 +31,8 @@ const ProvideData = () => {
                                 </div>
                             </div>
                             <p>Data usage royalties<span className="text-yellow-500 ml-2">${1050}</span></p>
-                            <button className="p-4 bg-cyan-800 hover:bg-cyan-700 rounded-md my-4">Provide Data</button>
+                            <button className="p-4 bg-cyan-800 hover:bg-cyan-700 rounded-xl my-4">Provide Data</button>
                         </div>
-
                     </form>
                 </div>
             </div>
