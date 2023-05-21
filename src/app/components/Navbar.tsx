@@ -49,8 +49,8 @@ const Navbar = () => {
                         onClick={() => router.push('/')} />
                     <a className="text-black dark:text-white hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" target="_blank" onClick={() => router.push('/')}>Home</a>
                     <a className=" text-black dark:text-gray-400 hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" onClick={() => router.push('/list')}>Medical Records</a>
+                    <a className=" text-black dark:text-gray-400 hover:bg-gray-300 hover:dark:bg-gray-800 hover:bg-opacity-50 hover:cursor-pointer p-3 rounded-xl" onClick={() => router.push('/patient-portal')}>Provide Portal</a>
                 </div>
-
                 <ConnectButton accountStatus="address" label="Sign in" />
             </nav >
         </div >
