@@ -28,7 +28,11 @@ function Providers({ children }: any) {
                     <Provider store={store}>
                         {children}
                     </Provider>
-                    <Toaster />
+                    <Toaster
+                        toastOptions={{
+                            className: 'bg-black-800 text-white font-bold border border-gray-700 rounded-md',
+                        }}
+                    />
                 </RainbowKitProvider>
             </WagmiConfig>
 

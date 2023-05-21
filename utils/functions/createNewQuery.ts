@@ -1,8 +1,11 @@
-import { ethers } from 'ethers';
-import { FetchSignerResult } from '@wagmi/core';
 import { getMaxPriorityFeePerGas } from './getFee';
 import { ABI } from './abi';
 import EthToWei from './ethToWei';
+
+import { ethers } from 'ethers';
+import toast from 'react-hot-toast';
+
+import { FetchSignerResult } from '@wagmi/core';
 
 
 const baseURI = process.env.NEXT_PUBLIC_BASE_URI || "/api/v1"
@@ -44,14 +47,21 @@ export const createNewQuery = async (
         const receipt = await tx.wait();
 
         if (!receipt) {
+            toast.remove();
+            toast.error("This didn't work.")
+
             throw new Error('Transaction failed');
         }
+        toast.remove();
+        toast.success('👏 Good Job!!')
         return {
             data: receipt,
             hasError: false
         };
     } catch (error: any) {
         console.error(error);
+        toast.remove();
+        toast.error("This didn't work.")
         throw new Error('Failed to reveal applicants');
     }
 };

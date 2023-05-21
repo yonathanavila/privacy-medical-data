@@ -1,4 +1,6 @@
+import toast from 'react-hot-toast';
 import lighthouse from '@lighthouse-web3/sdk';
+
 
 const api_key = process.env.NEXT_PUBLIC_API_KEY!;
 
@@ -28,6 +30,8 @@ export const uploadFile = async (e: any) => {
     console.log('Visit at https://gateway.lighthouse.storage/ipfs/' + output.data.Hash);
     return output.data.Hash;
   } catch (error) {
+    toast.error("This didn't work.")
+    toast.remove();
     console.error(error)
   }
 

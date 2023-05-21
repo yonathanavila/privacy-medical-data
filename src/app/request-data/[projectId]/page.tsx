@@ -1,35 +1,38 @@
 "use client";
 
-import { useAccount, useProvider, useSigner } from 'wagmi';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import getTotalFee from '~/root/utils/functions/getTotalFee';
 import getFILPrice from '~/root/utils/functions/getFILPrice';
 import DropInput from '../../components/QuerySelector/DropInput';
-import { addStep, clearArray, selectStep } from '~/root/utils/slice/steps';
 import ButtonUpload from '../../components/QuerySelector/ButtonUpload';
+import { createNewQuery } from '~/root/utils/functions/createNewQuery';
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+import { addStep, clearArray, selectStep } from '~/root/utils/slice/steps';
 import { useAppDispatch, useAppSelector } from '~/root/hooks/useAppDispatch';
 import getEncode, { IApplicantInformation } from '~/root/utils/functions/getEncode';
 import { uploadFile } from '~/root/utils/functions/uploadFile';
-import { createNewQuery } from '~/root/utils/functions/createNewQuery';
 import { chainId } from '~/root/utils/functions/chain';
+import NoConnected from '~/app/components/NoConnected';
+
+import toast from 'react-hot-toast';
+import { useAccount, useProvider, useSigner } from 'wagmi';
 
 const Page = () => {
 
     const dispatch = useAppDispatch();
 
-    const { address } = useAccount();
+    const { address, isConnected } = useAccount();
     const steps: any = useAppSelector(selectStep);
+    const [stepOne, setStepOne] = useState<any>("");
+    const [stepTwo, setStepTwo] = useState<any>("");
+    const [amount, setAmount] = useState<number>(22);
+    const [stepThree, setStepThree] = useState<any>("");
+    const [currentStep, setCurrentStep] = useState<any>("");
     const [stepOneInfo, setStepOneInfo] = useState<any>("");
     const [stepTwoInfo, setStepTwoInfo] = useState<any>("");
     const [stepThreeInfo, setStepThreeInfo] = useState<any>("");
-    const [stepOne, setStepOne] = useState<any>("");
-    const [stepTwo, setStepTwo] = useState<any>("");
-    const [stepThree, setStepThree] = useState<any>("");
-    const [currentStep, setCurrentStep] = useState<any>("");
-    const [amount, setAmount] = useState<number>(22);
 
     const provider = useProvider(chainId);
     const { data: signer } = useSigner(chainId);
@@ -92,6 +95,7 @@ const Page = () => {
     };
 
     const handleFileUpload = async (step: number) => {
+        toast.loading('Your file is being uploaded');
         setStepLoading(step, true);
         let CID = ''
         switch (step) {
@@ -109,6 +113,9 @@ const Page = () => {
                     current: 'queryFile',
                     next: 'projectionFile'
                 });
+
+                toast.remove();
+                toast.success('👏 Good Job!!')
                 break;
             case 2:
                 if (!stepTwoInfo) {
@@ -124,7 +131,8 @@ const Page = () => {
                     current: 'projectionFile',
                     next: 'scriptFile'
                 });
-
+                toast.remove();
+                toast.success('👏 Good Job!!')
                 break;
             case 3:
                 if (!stepThreeInfo) {
@@ -140,8 +148,12 @@ const Page = () => {
                     current: 'scriptFile',
                     next: ''
                 });
+                toast.remove();
+                toast.success('👏 Good Job!!')
                 break;
             default:
+                toast.remove();
+                toast.error("This didn't work.")
                 throw new Error("Invalid step");
         }
 
@@ -171,7 +183,8 @@ const Page = () => {
     };
 
     const handleConfirm = () => {
-        console.log(steps);
+
+        toast.loading('Sending transaction...');
 
         const _steps = [
             {
@@ -201,6 +214,11 @@ const Page = () => {
     };
 
     const router = useRouter();
+
+
+    if (!address && !isConnected) {
+        return <NoConnected />
+    }
 
     return (
         <div className="flex flex-col min-h-screen items-center my-10 p-5" >
