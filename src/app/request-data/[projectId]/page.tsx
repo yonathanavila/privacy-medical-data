@@ -1,9 +1,9 @@
 "use client";
+import React, { useState } from 'react';
 
-import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useAccount, useProvider, useSigner } from 'wagmi';
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 
@@ -13,174 +13,117 @@ import getTotalFee from '~/root/utils/functions/getTotalFee';
 import getFILPrice from '~/root/utils/functions/getFILPrice';
 import { uploadFile } from '~/root/utils/functions/uploadFile';
 import DropInput from '../../components/QuerySelector/DropInput';
-import ButtonUpload from '../../components/QuerySelector/ButtonUpload';
 import { createNewQuery } from '~/root/utils/functions/createNewQuery';
 import { addStep, clearArray, selectStep } from '~/root/utils/slice/steps';
 import { useAppDispatch, useAppSelector } from '~/root/hooks/useAppDispatch';
 import getEncode, { IApplicantInformation } from '~/root/utils/functions/getEncode';
+
+interface IProjection {
+    loading: boolean,
+    data: any[],
+    done: boolean
+}
+
+interface ICurrentStep {
+    loading?: boolean,
+    done?: boolean,
+    data?: any[],
+    step: string
+}
 
 const Page = () => {
 
     const dispatch = useAppDispatch();
     const { address, isConnected } = useAccount();
     const steps: any = useAppSelector(selectStep);
-    const [stepOne, setStepOne] = useState<any>("");
-    const [stepTwo, setStepTwo] = useState<any>("");
     const [amount, setAmount] = useState<number>(22);
-    const [stepThree, setStepThree] = useState<any>("");
-    const [currentStep, setCurrentStep] = useState<any>("");
-    const [stepOneInfo, setStepOneInfo] = useState<any>("");
-    const [stepTwoInfo, setStepTwoInfo] = useState<any>("");
-    const [stepThreeInfo, setStepThreeInfo] = useState<any>("");
+    const [currentStep, setCurrentStep] = useState<ICurrentStep>();
+    const [loadingProjection, setLoadingProjection] = useState<IProjection>({ loading: false, data: [], done: false });
 
     const provider = useProvider(chainId);
     const { data: signer } = useSigner(chainId);
 
-    useEffect(() => {
-        // set query file if exist
-        if (!stepOne) {
-            const queryFile = findStep('queryFile');
-            setStepOne(queryFile);
-        }
-    }, [steps]);
-
-    const findStep = (stepName: string) => {
-        if (steps.length > 0) {
-            // call storage to seacrh step
-            const index = steps.find((step: any) => step.stepName === stepName);
-            if (index) {
-                return index;
-            }
-            return undefined;
-        }
-        return undefined;
-    }
-
     const handleStepOneInfoChange = (event: any) => {
         event.preventDefault();
         const { name, files } = event.target;
-        setStepOneInfo(
-            { name, file: event }
-        )
+        setCurrentStep((prevState: any) => ({
+            ...prevState,
+            data: [event],
+            step: 'queryFile'
+        }));
     };
 
-    const handleStepTwoInfoChange = (event: any) => {
-        event.preventDefault();
-        const { name, files } = event.target;
-        setStepTwoInfo({ name, file: event });
-    };
-
-    const handleStepThreeInfoChange = (event: any) => {
-        event.preventDefault();
-        const { name, files } = event.target;
-        setStepThreeInfo({ name, file: event });
-    };
-
-    const setStepLoading = (step: number, loading: boolean) => {
-        switch (step) {
-            case 1:
-                setStepOne({ loading });
-                break;
-            case 2:
-                setStepTwo({ loading });
-                break;
-            case 3:
-                setStepThree({ loading });
-                break;
-            default:
-                throw new Error("Invalid step");
-        }
-    };
-
-    const handleFileUpload = async (step: number) => {
+    const handleFileUpload = async () => {
         toast.loading('Your file is being uploaded');
-        setStepLoading(step, true);
-        let CID = ''
-        switch (step) {
-            case 1:
-                if (!stepOneInfo) {
-                    throw new Error("No data");
-                }
-                CID = await uploadFile(stepOneInfo.file);
-                dispatch(addStep({
-                    stepName: 'queryFile',
-                    CID
-                }));
-                setStepOne({ loading: false, stepName: 'queryFile', CID });
-                setCurrentStep({
-                    current: 'queryFile',
-                    next: 'projectionFile'
-                });
 
-                toast.remove();
-                toast.success('👏 Good Job!!')
-                break;
-            case 2:
-                if (!stepTwoInfo) {
-                    throw new Error("No data");
-                }
-                CID = await uploadFile(stepTwoInfo.file);
-                dispatch(addStep({
-                    stepName: 'projectionFile',
-                    CID
-                }));
-                setStepTwo({ loading: false, stepName: 'projectionFile', CID });
-                setCurrentStep({
-                    current: 'projectionFile',
-                    next: 'scriptFile'
-                });
-                toast.remove();
-                toast.success('👏 Good Job!!')
-                break;
-            case 3:
-                if (!stepThreeInfo) {
-                    throw new Error("No data");
-                }
-                CID = await uploadFile(stepThreeInfo.file);
-                dispatch(addStep({
-                    stepName: 'scriptFile',
-                    CID
-                }));
-                setStepThree({ loading: false, stepName: 'scriptFile', CID });
-                setCurrentStep({
-                    current: 'scriptFile',
-                    next: ''
-                });
-                toast.remove();
-                toast.success('👏 Good Job!!')
-                break;
-            default:
-                toast.remove();
-                toast.error("This didn't work.")
-                throw new Error("Invalid step");
+        setCurrentStep((prevState: any) => ({
+            ...prevState,
+            loading: true,
+            done: false,
+        }));
+
+        if (currentStep?.data?.length == 0 || currentStep?.data === undefined) {
+            setCurrentStep({
+                loading: false,
+                done: false,
+                step: 'queryFile'
+            });
+            throw new Error("No data");
         }
 
+        const CID = await uploadFile(currentStep?.data[0]);
+
+        setCurrentStep({
+            loading: false,
+            done: true,
+            data: [CID],
+            step: 'queryFile'
+        });
+
+        dispatch(addStep({
+            stepName: 'queryFile',
+            CID
+        }));
+
+        setLoadingProjection(
+            {
+                loading: true,
+                data: [{
+                    dateOfEntry: '22/4/2023',
+                    patientReferenceID: '#5862335286',
+                    symptoms: 'Dizziness, Fatigue, Shortness of breath',
+                    diagnosis: 'Hypertension'
+                }],
+                done: false
+            }
+        );
+
+        setTimeout(() => {
+            setLoadingProjection((prevState: any) => (
+                {
+                    ...prevState,
+                    loading: false,
+                    done: true,
+                }
+            ));
+        }, 30000);
+
+        toast.remove();
+        toast.success('👏 Good Job!!')
     };
 
     const handleOnDropStep1 = (event: any) => {
         event.preventDefault();
         const files = event.dataTransfer.files;
-        setStepOneInfo(
-            { name: 'queryFile', file: files }
-        )
-        // Additional logic for step 1
+        setCurrentStep({
+            loading: false,
+            done: true,
+            data: [{ step: 'queryFile', file: files }],
+            step: 'queryFile'
+        });
     };
 
-    const handleOnDropStep2 = (event: any) => {
-        event.preventDefault();
-        const files = event.dataTransfer.files;
-        setStepTwoInfo({ name: 'projectionFile', file: event });
-        // Additional logic for step 2
-    };
-
-    const handleOnDropStep3 = (event: any) => {
-        event.preventDefault();
-        const files = event.dataTransfer.files;
-        setStepThreeInfo({ name: 'scriptFile', file: event });
-        // Additional logic for step 3
-    };
-
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
 
         toast.loading('Sending transaction...');
 
@@ -206,39 +149,38 @@ const Page = () => {
             scriptCID: _steps[2].CID
         };
         const dataEncoded = getEncode(data);
-        createNewQuery(provider, signer, [dataEncoded], amount);
+        await createNewQuery(provider, signer, [dataEncoded], amount);
         dispatch(clearArray)
         console.log(dataEncoded);
     };
 
     const router = useRouter();
 
-
     if (!address && !isConnected) {
         return <NoConnected />
     }
 
     return (
-        <div className="flex flex-col min-h-screen items-center my-10 p-5" >
+        <div className="flex flex-col items-center mt-[15vh] p-4" >
             <div className="relative">
-                <div className="fixed top-[25vh] right-0 p-4 mr-4 z-10 w-[20%] drop-shadow-lg border border-gray-700 rounded-md bg-neutral-800/70">
+                <div className="fixed right-0 p-4 mr-4 z-10 w-1/4 drop-shadow-lg border border-gray-700 rounded-md bg-neutral-800/70">
                     <ul className="p-2">
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
-                                {stepOne?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
-                                <p className={`${stepOne?.loading || currentStep?.current === 'queryFile' && 'text-xl text-white'} transition ease-in-out delay-150 duration-300 hover:scale-110`}>Upload the query</p>
+                                {(currentStep?.loading && currentStep?.step === 'queryFile') ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${(currentStep?.done && currentStep?.step === 'queryFile') ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
+                                <p className={`${currentStep?.loading || currentStep?.step === 'queryFile' && 'text-xl text-white'} transition ease-in-out delay-150 duration-300 hover:scale-110`}>Upload the query</p>
                             </div>
                         </li>
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
-                                {stepTwo?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
-                                <p className={`${stepTwo?.loading || currentStep?.current === 'projectionFile' && 'text-xl text-white'} transition ease-in-out delay-150 duration-300 hover:scale-110`}>Upload the projection</p>
+                                {(loadingProjection?.loading) ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${(!loadingProjection?.loading && loadingProjection?.data?.length > 0) ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
+                                <p className={`${(loadingProjection?.loading || loadingProjection?.done) && 'text-xl text-white'} transition ease-in-out delay-150 duration-300 hover:scale-110`}>Get the projection</p>
                             </div>
                         </li>
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
-                                {stepThree?.loading ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
-                                <p className={`${stepThree?.loading || currentStep?.current === 'scriptFile' && 'text-xl text-white'} transition ease-in-out delay-150 duration-300 hover:scale-110`}>Upload the script</p>
+                                {(currentStep?.loading && currentStep?.step === 'runJob') ? <LoadingOutlined className="animate-spin h-5 w-5 mr-3" /> : <CheckCircleOutlined className={`${(currentStep?.done && currentStep?.step === 'runJob') ? '' : 'hidden'} z-5 text-center block text-sm mr-2 mx-1/2`} />}
+                                <p className={`${(loadingProjection?.done) && 'text-xl text-white'} transition ease-in-out delay-150 duration-300 hover:scale-110`}>Run the job</p>
                             </div>
                         </li>
                     </ul>
@@ -257,7 +199,7 @@ const Page = () => {
                         Confirm order
                     </button>
                 </div>
-                <div className="z-0 bg-neutral-800/70 rounded-xl">
+                <div className="z-0 bg-neutral-800/70 rounded-xl border border-gray-700 rounded-md">
                     <button
                         onClick={() => router.push('/')}
                         className='bg-transparent border border-transparent hover:bg-neutral-800/30 hover:border-gray-300 p-4 rounded-md font-semibold'
@@ -270,16 +212,16 @@ const Page = () => {
                                 <h3 className="font-bold text-lg text-white">
                                     Query
                                 </h3>
-                                <p className="mt-1 text-sm text-white">
-                                    You need to provide a query to request the data before.
+                                <p className="mt-1 text-sm text-gray-400 font-semibold">
+                                    This query represent how you want to requested records, if you don&apos;t need the entire data, you can provide a query to request specific data of the patients from the record bank.
                                 </p>
                             </div>
                             <div className="shadow sm:rounded-md sm:overflow-hidden mt-4 rounded-md hover:border hover:border-gray-300">
                                 <div className='p-2 block'>
-                                    <CheckCircleOutlined className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
-                                    <a className={`${stepOne ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`} target='_blank' href={'https://gateway.lighthouse.storage/ipfs/' + stepOne?.CID}>Visit at Lighthouse</a>
+                                    <CheckCircleOutlined className={`${(!currentStep?.loading && currentStep?.step === 'queryFile' && currentStep?.done) ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
+                                    <a className={`${(!currentStep?.loading && currentStep?.step === 'queryFile' && currentStep?.done) ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`} target='_blank' href={'https://gateway.lighthouse.storage/ipfs/' + steps[0]?.CID}>Visit at Lighthouse</a>
                                 </div>
-                                <div className={`${stepOne && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>
+                                <div className={`${steps?.CID && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>
                                     <div className="px-4 py-5 sm:p-6">
                                         <div>
                                             <label className="block text-sm font-medium text-white">
@@ -289,7 +231,17 @@ const Page = () => {
                                         </div>
                                     </div>
                                     <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepOneInfo?.file && (<ButtonUpload name={stepOneInfo?.name} handle={() => handleFileUpload(1)} enable={stepOne?.CID ? true : false} />)}
+                                        {currentStep?.data && (
+                                            <>
+                                                <p className='text-white text-left font-semibold'>Selected file: {currentStep?.step}</p>
+                                                <button
+                                                    disabled={steps?.CID}
+                                                    onClick={handleFileUpload}
+                                                    className={`mt-4 py-2 px-4 text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-indigo-500 cursor-pointer ${(steps[0]?.CID) && 'disabled:opacity-50 disabled:pointer-events-none'}`}>
+                                                    Upload
+                                                </button >
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -297,57 +249,46 @@ const Page = () => {
                         <div className="mt-0 max-w-md">
                             <div className="px-4 sm:px-0 m-4">
                                 <h3 className="font-bold text-lg text-white">Projection</h3>
-                                <p className="mt-1 text-sm text-white">
-                                    It allows you to define the specific data you want to retrieve from a database or data source.
+                                <p className="mt-1 text-sm text-gray-400 font-semibold">
+                                    Indicates which specific fields or attributes you are interested in retrieving from the dataset. It&apos;s useful when working with large datasets.
                                 </p>
                             </div>
-                            <div className="shadow sm:rounded-md sm:overflow-hidden hover:border hover:border-gray-300 mt-4 rounded-md">
-                                <div className='p-2'>
-                                    <CheckCircleOutlined className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
-                                    <a className={`${stepTwo ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`} target='_blank' href={'https://gateway.lighthouse.storage/ipfs/' + stepTwo?.CID}>Visit at Lighthouse</a>
-
-                                </div>
-                                <div className={`${stepTwo && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <div>
-                                            <label className="block text-sm font-medium text-white">
-                                                Select file
-                                            </label>
-                                            <DropInput handleDrop={handleOnDropStep2} handleChange={handleStepTwoInfoChange} customName={"projectionFile"} id="projectionFile" />
-                                        </div>
-                                    </div>
-                                    <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepTwoInfo && (<ButtonUpload name={stepTwoInfo?.name} handle={() => handleFileUpload(2)} enable={stepTwo?.CID ? true : false} />)}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-0 max-w-md">
-                            <div className="px-4 sm:px-0 m-4">
-                                <h3 className="font-bold text-lg text-white">Upload Script</h3>
-                                <p className="mt-1 text-sm text-white">
-                                    The script allows to execute the query over the data.
-                                </p>
-                            </div>
-                            <div className="shadow sm:rounded-md sm:overflow-hidden hover:border hover:border-gray-300 mt-4 rounded-md">
-                                <div className='p-2'>
-                                    <CheckCircleOutlined className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-7xl text-green-500 mx-1/2`} />
-                                    <a className={`${stepThree ? '' : 'hidden'} z-5 text-center block text-xl text-green-500 mx-1/2`} target='_blank' href={'https://gateway.lighthouse.storage/ipfs/' + stepThree?.CID}>Visit at Lighthouse</a>
-
-                                </div>
-                                <div className={`${stepThree && 'blur-md disabled:opacity-50 disabled:pointer-events-none'}`}>
-                                    <div className="px-4 py-5 sm:p-6">
-                                        <div>
-                                            <label className="block text-sm font-medium text-white">
-                                                Select file
-                                            </label>
-                                            <DropInput handleDrop={handleOnDropStep3} handleChange={handleStepThreeInfoChange} customName={"scriptFile"} id="scriptFile" />
-                                        </div>
-                                    </div>
-                                    <div className="px-4 py-3 text-right sm:px-6">
-                                        {stepThreeInfo && (<ButtonUpload name={stepThreeInfo?.name} handle={() => handleFileUpload(3)} enable={stepThree?.CID ? true : false} />)}
-                                    </div>
-                                </div>
+                            <div className="py-4">
+                                {
+                                    loadingProjection?.loading ?
+                                        (
+                                            <div className='flex flex-col items-center justify-center'>
+                                                <LoadingOutlined />
+                                            </div>
+                                        ) :
+                                        (loadingProjection?.data?.length > 0) && (
+                                            (
+                                                <>
+                                                    <h2 className='p-4'>Projection</h2>
+                                                    <div className='flex flex-col items-center justify-center'>
+                                                        <table className='mx-2'>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th className='text-xs text-left text-gray-400 bg-gray-700'>DATE OF ENTRY</th>
+                                                                    <th className='text-xs text-left text-gray-400 bg-gray-700'>PATIENT REFERENCE ID</th>
+                                                                    <th className='text-xs text-left text-gray-400 bg-gray-700'>SYMPTOMS</th>
+                                                                    <th className='text-xs text-left text-gray-400 bg-gray-700'>DIAGNOSIS</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr >
+                                                                    <td className='text-xs text-left'>22/4/2023</td>
+                                                                    <td className='text-xs text-left'>#5862335286</td>
+                                                                    <td className='text-xs text-left'>Dizziness, Fatigue, Shortness of breath</td>
+                                                                    <td className='text-xs text-left'>Hypertension</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </>
+                                            )
+                                        )
+                                }
                             </div>
                         </div>
                     </div>

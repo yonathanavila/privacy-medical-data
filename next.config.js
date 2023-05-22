@@ -4,7 +4,7 @@ const nextConfig = {
         appDir: true
     },
     compiler: {
-        removeConsole: process.env.PRODUCTION == "false" ? true : false || true
+        removeConsole: false
     }
 }
 

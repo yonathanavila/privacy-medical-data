@@ -28,18 +28,6 @@ const UploadData = () => {
         console.log(percentageDone);
     };
 
-    useEffect(() => {
-        /* ListeningLitConnected(setNetworkLoading);
-        console.log(networkLoading); */
-        document.addEventListener(
-            "lit-ready",
-            function (e) {
-                console.log("LIT network is ready");
-            },
-            false
-        );
-    }, []);
-
     const uploadFile = async (e: any) => {
         setLoading(true);
         try {

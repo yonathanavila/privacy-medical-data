@@ -13,9 +13,15 @@ export const stepsSlice = createSlice({
     initialState,
     reducers: {
         addStep: (state, action) => {
-            console.log("Step added");
-            state.steps.push(action.payload);
+            console.log("Step added", action.payload);
+
+            const index = state.steps.findIndex((step) => step.stepName === action.payload.stepName);
+
+            if (index === -1) {
+                state.steps.push(action.payload);
+            }
         },
+
         removeStep: (state, action) => {
             const index = state.steps.findIndex((step) => step.id === action.payload.id);
             if (index !== -1) {
