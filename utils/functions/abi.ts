@@ -164,16 +164,6 @@ export const ABI = [
                 "internalType": "string",
                 "name": "queryCID",
                 "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "projectionCID",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "scriptCID",
-                "type": "string"
             }
         ],
         "stateMutability": "view",
@@ -209,13 +199,13 @@ export const ABI = [
         "outputs": [
             {
                 "internalType": "address",
-                "name": "dataprovider",
+                "name": "dataProvider",
                 "type": "address"
             },
             {
-                "internalType": "uint256",
-                "name": "queryId",
-                "type": "uint256"
+                "internalType": "string",
+                "name": "queryCID",
+                "type": "string"
             },
             {
                 "internalType": "uint256",
@@ -297,4 +287,4 @@ export const ABI = [
         "stateMutability": "nonpayable",
         "type": "function"
     }
-];
+]

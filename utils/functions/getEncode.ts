@@ -18,8 +18,8 @@ export default function getEncode(
 
         // Encode the function call data
         const encodedData = ethers.utils.defaultAbiCoder.encode(
-            ["uint256", "address", "string", "string", "string"],
-            [amountWei, applicantInformation.dataProvider, applicantInformation.queryCID, applicantInformation.projectionCID, applicantInformation.scriptCID]
+            ["uint256", "address", "string"],
+            [amountWei, applicantInformation.dataProvider, applicantInformation.queryCID]
         );
 
         return encodedData;

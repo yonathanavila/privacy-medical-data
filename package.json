@@ -14,7 +14,6 @@
     "@rainbow-me/rainbowkit": "^0.12.9",
     "@reduxjs/toolkit": "^1.9.5",
     "@supabase/supabase-js": "^2.22.0",
-    "@types/node": "20.1.2",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
@@ -31,5 +30,8 @@
     "typescript": "5.0.4",
     "viem": "^0.3.31",
     "wagmi": "^0.12.12"
+  },
+  "devDependencies": {
+    "@types/node": "^20.2.3"
   }
 }

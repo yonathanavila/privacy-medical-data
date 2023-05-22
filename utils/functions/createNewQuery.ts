@@ -1,17 +1,12 @@
-import { getMaxPriorityFeePerGas } from './getFee';
+import { ethers } from 'ethers';
+import toast from 'react-hot-toast';
+import { FetchSignerResult } from '@wagmi/core';
+
 import { ABI } from './abi';
 import EthToWei from './ethToWei';
 
-import { ethers } from 'ethers';
-import toast from 'react-hot-toast';
-
-import { FetchSignerResult } from '@wagmi/core';
-
-
-const baseURI = process.env.NEXT_PUBLIC_BASE_URI || "/api/v1"
 const medicalRecordsAddress = process.env.NEXT_PUBLIC_MR_ADDRESS!
 const gasLimit = process.env.NEXT_PUBLIC_GAS_LIMIT!
-const gasPrice = process.env.NEXT_PUBLIC_GAS_PRICE!
 
 /// @notice Reveal Resume
 interface RevealResponse {
@@ -30,9 +25,7 @@ export const createNewQuery = async (
     if (!provider || !signer || !_encodedQuery || fee === undefined) {
         throw new Error('Invalid input parameters');
     }
-
-/*     const maxPriorityFee = await getMaxPriorityFeePerGas(provider);
- */    const args: any[] = [
+    const args: any[] = [
         _encodedQuery,
         {
             gasLimit: gasLimit || 1800000,
