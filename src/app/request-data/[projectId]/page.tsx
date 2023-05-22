@@ -1,28 +1,27 @@
 "use client";
 
+import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useAccount, useProvider, useSigner } from 'wagmi';
+import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+
+import { chainId } from '~/root/utils/functions/chain';
+import NoConnected from '~/app/components/NoConnected';
 import getTotalFee from '~/root/utils/functions/getTotalFee';
 import getFILPrice from '~/root/utils/functions/getFILPrice';
+import { uploadFile } from '~/root/utils/functions/uploadFile';
 import DropInput from '../../components/QuerySelector/DropInput';
 import ButtonUpload from '../../components/QuerySelector/ButtonUpload';
 import { createNewQuery } from '~/root/utils/functions/createNewQuery';
-import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { addStep, clearArray, selectStep } from '~/root/utils/slice/steps';
 import { useAppDispatch, useAppSelector } from '~/root/hooks/useAppDispatch';
 import getEncode, { IApplicantInformation } from '~/root/utils/functions/getEncode';
-import { uploadFile } from '~/root/utils/functions/uploadFile';
-import { chainId } from '~/root/utils/functions/chain';
-import NoConnected from '~/app/components/NoConnected';
-
-import toast from 'react-hot-toast';
-import { useAccount, useProvider, useSigner } from 'wagmi';
 
 const Page = () => {
 
     const dispatch = useAppDispatch();
-
     const { address, isConnected } = useAccount();
     const steps: any = useAppSelector(selectStep);
     const [stepOne, setStepOne] = useState<any>("");
@@ -40,7 +39,6 @@ const Page = () => {
     useEffect(() => {
         // set query file if exist
         if (!stepOne) {
-
             const queryFile = findStep('queryFile');
             setStepOne(queryFile);
         }

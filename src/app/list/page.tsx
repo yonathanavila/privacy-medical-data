@@ -10,7 +10,10 @@ export default async function List() {
     return (
         <div className="flex flex-col lg:p-5 mt-[16vh] items-center justify-center">
             <div className="grid grid-cols-1 w-3/4">
-                <h1 className="text-2xl font-bold p-4">Medical records</h1>
+                <h1 className="text-4xl font-bold p-4">Medical records</h1>
+                <p className="p-3 text-md">
+                    There are some records provided by patients and doctors, anyone are be able to retrieve and get treatment records.
+                </p>
                 <div className="flex flex-col">
                     <div className="overflow-x-auto md:overflow-x-hidden mb-5 border border-b-[1px] border-[#374151] rounded-md">
                         <table className="bg-gray-800 lg:p-4 lg:py-10 max-h-screen">
