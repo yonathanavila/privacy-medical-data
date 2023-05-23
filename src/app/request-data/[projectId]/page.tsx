@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 import { useAccount, useProvider, useSigner } from 'wagmi';
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 
@@ -163,7 +163,7 @@ const Page = () => {
     return (
         <div className="flex flex-col items-center mt-[15vh] p-4" >
             <div className="relative">
-                <div className="fixed right-0 p-4 mr-4 z-10 w-1/4 drop-shadow-lg border border-gray-700 rounded-md bg-neutral-800/70">
+                <div className="lg:fixed lg:right-0 lg:z-10 lg:w-1/4 lg:mr-4 md:fixed md:right-0 md:z-10 md:w-[15%] md:mr-4 sm:w-screen sm:absolute my-4 p-4 drop-shadow-lg border border-gray-700 rounded-md bg-neutral-800/70 ">
                     <ul className="p-2">
                         <li className="p-2 text-gray-400">
                             <div className='flex flex-row items-center'>
@@ -199,7 +199,7 @@ const Page = () => {
                         Confirm order
                     </button>
                 </div>
-                <div className="z-0 bg-neutral-800/70 rounded-xl border border-gray-700 rounded-md">
+                <div className="lg:z-0 bg-neutral-800/70 rounded-xl border border-gray-700 rounded-md sm:mt-[10vh]">
                     <button
                         onClick={() => router.push('/')}
                         className='bg-transparent border border-transparent hover:bg-neutral-800/30 hover:border-gray-300 p-4 rounded-md font-semibold'
