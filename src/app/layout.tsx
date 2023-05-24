@@ -7,7 +7,7 @@ import Provider from './Provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Electronic Health Records - #FVMDataverse',
+  title: 'File Health - #FVMDataverse',
   description: 'FVM Dataverse Hackathon',
 }
 
@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en">s
       <body className='bg-gradient-to-b from-[#131727] to-[#070816] h-max'>
         <div className="bck h-max"></div>
         <div className="dotBck h-max" style={{ transform: "scale(1.1)" }}></div>
